@@ -11,7 +11,7 @@ Los resultados numéricos se calculan en el momento con el código del proyecto,
 el informe siempre coincide con lo que muestra la aplicación. Las imágenes están en informe/img
 (capturas de la aplicación).
 
->>> Complete los datos del grupo y el enlace al repositorio en la sección DATOS DEL GRUPO. <<<
+Los datos del grupo se editan en la sección DATOS DEL GRUPO.
 """
 
 import os
@@ -38,7 +38,6 @@ from laberinto.configuraciones import (red_original, configuraciones_comparadas,
 # =========================================================================== DATOS DEL GRUPO
 INTEGRANTES = ["Benjamín Aliaga", "Juan Carrera", "Lizardo Salazar"]
 DOCENTE = "Elliott Mardones"
-REPO_URL = "[Enlace al repositorio o carpeta con el código fuente]"
 FECHA = "26 de noviembre de 2026"
 
 SALIDA_PDF = os.path.join(RAIZ, "informe", "Informe_Proyecto1_Grafos.pdf")
@@ -241,8 +240,7 @@ def portada():
     h.append(Spacer(1, 1.0 * cm))
     datos = [["Integrantes", "<br/>".join(INTEGRANTES)],
              ["Docente", DOCENTE],
-             ["Fecha de entrega", FECHA],
-             ["Código fuente", REPO_URL]]
+             ["Fecha de entrega", FECHA]]
     t = Table([[Paragraph(a, E["celda_b"]), Paragraph(b, E["celda"])] for a, b in datos],
               colWidths=[4 * cm, 10 * cm])
     t.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, -2), 0.3, colors.HexColor("#c0c8d0")),
@@ -487,7 +485,7 @@ def implementacion():
     h = [P("4. Implementación", "h1")]
     h.append(P("4.1 Tecnología y organización del código", "h2"))
     h.append(P(
-        "La aplicación está escrita en Python 3 (probada con la versión 3.13). La interfaz usa "
+        "La aplicación está escrita en Python. La interfaz usa "
         "<i>tkinter</i>, que viene incluido con Python, por lo que no hay dependencias externas. Los "
         "algoritmos usan solo estructuras básicas del lenguaje (<i>dict</i>, <i>list</i>, <i>set</i> y "
         "<i>collections.deque</i> como cola); no se emplea ninguna biblioteca de grafos ni de flujo. "
@@ -578,10 +576,10 @@ max_caminos_disjuntos(G, s, t):
              ["Comparar estrategias", "Ventana con BFS frente a DFS y Edmonds-Karp frente a Ford-Fulkerson (DFS) y la estrategia voraz."]]
     h.append(tabla(filas, [5.0, 10.0], "Funcionalidades de la interfaz frente a los requisitos del enunciado."))
 
-    h.append(P("4.7 Ejecución y repositorio", "h2"))
-    h.append(P(f"El código fuente, las instrucciones (README.md) y este informe están disponibles en: "
-               f"<b>{REPO_URL}</b>. Requisitos: Python 3.9 o superior con tkinter (incluido en Windows y "
-               "macOS; en Linux, paquete <i>python3-tk</i>); no se necesitan paquetes adicionales."))
+    h.append(P("4.7 Ejecución", "h2"))
+    h.append(P("Para ejecutar la aplicación solo se necesita Python con <i>tkinter</i>, que viene incluido "
+               "en la instalación estándar; no se requieren paquetes adicionales. Desde la carpeta del "
+               "proyecto:"))
     h.append(codigo("""
 python app.py                              # aplicacion interactiva
 python verificacion.py                     # informe completo por consola
@@ -808,7 +806,7 @@ def referencias():
         "(recorridos de grafos) y cap. 7 (flujo en redes; §7.6, caminos disjuntos en grafos dirigidos).",
         "Menger, K. (1927). Zur allgemeinen Kurventheorie. <i>Fundamenta Mathematicae</i>, 10, 96–115.",
         "Python Software Foundation. (2024). <i>collections — Container datatypes</i> y <i>tkinter — Python "
-        "interface to Tcl/Tk</i>. Documentación de Python 3. https://docs.python.org/3/",
+        "interface to Tcl/Tk</i>. Documentación oficial de Python. https://docs.python.org/",
     ]
     h += [P(r, "ref") for r in refs]
     return h
