@@ -1,0 +1,20 @@
+# Caché de Python
+__pycache__/
+*.py[cod]
+
+# Entornos virtuales
+.venv/
+venv/
+env/
+
+# Configuración de editores
+.vscode/
+.idea/
+
+# Archivos del sistema operativo
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Redes guardadas desde la aplicación (Guardar JSON…), si se dejan en la carpeta
+*.json
