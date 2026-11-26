@@ -126,20 +126,6 @@ class Grafo:
         """Retorna la lista de arcos bloqueados (u, v)."""
         return [a for a, d in self.arcos.items() if not d["activo"]]
 
-    def sucesores(self, u, excluidos=None):
-        """
-        Lista de vecinos de salida de u por pasillos activos.
-
-        Parámetros:
-            u (str): vértice.
-            excluidos (set[tuple] | None): arcos que se consideran eliminados (G - C).
-        Resultado:
-            list[str] con los vértices v tales que u → v es un pasillo activo no excluido.
-        """
-        excluidos = excluidos or set()
-        return [v for (a, v), d in self.arcos.items()
-                if a == u and d["activo"] and (a, v) not in excluidos]
-
     def lista_adyacencia(self, excluidos=None):
         """
         Construye la lista de adyacencia de los arcos activos.
