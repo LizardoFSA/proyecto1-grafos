@@ -136,7 +136,7 @@
 >
 > Como hay 2 rutas y un corte de 2 pasillos, ninguna familia de rutas puede ser más grande y ningún corte puede ser más chico: las dos son óptimas. La aplicación obtiene exactamente lo mismo.
 >
-> Además, cada vez que calcula, la aplicación comprueba en el panel de resultados que los caminos respetan el sentido de los pasillos activos, que no comparten arcos, que el corte tiene el mismo tamaño que la familia de rutas y que, al quitar el corte, t queda inalcanzable. También probamos el código con 300 grafos aleatorios contra una búsqueda por fuerza bruta.
+> Además, cada vez que calcula, la aplicación comprueba en el panel de resultados que los caminos respetan el sentido de los pasillos activos, que no comparten arcos, que el corte tiene el mismo tamaño que la familia de rutas y que, al quitar el corte, t queda inalcanzable. Incluso revisa por fuerza bruta que no exista un corte más pequeño.
 
 > Ahora [nombre integrante 3] va a modificar la red en vivo.
 

@@ -499,9 +499,7 @@ def implementacion():
               "voraz; verificaciones y corte por fuerza bruta; formato del informe de resultados."],
              ["laberinto/configuraciones.py", "Red original, modificaciones 1 y 2, caso de verificación de "
               "5 vértices y contraejemplo de la estrategia voraz."],
-             ["app.py", "Interfaz gráfica interactiva."],
-             ["verificacion.py", "Informe por consola de todas las configuraciones y verificaciones."],
-             ["tests/test_algoritmos.py", "Pruebas automáticas (unittest)."]]
+             ["app.py", "Interfaz gráfica interactiva."]]
     h.append(tabla(filas, [4.4, 10.6], "Estructura del proyecto."))
 
     h.append(P("4.2 Representación del grafo", "h2"))
@@ -581,9 +579,7 @@ max_caminos_disjuntos(G, s, t):
                "en la instalación estándar; no se requieren paquetes adicionales. Desde la carpeta del "
                "proyecto:"))
     h.append(codigo("""
-python app.py                              # aplicacion interactiva
-python verificacion.py                     # informe completo por consola
-python -m unittest discover -s tests -v    # pruebas automaticas
+python app.py
 """))
     return h
 
@@ -752,16 +748,6 @@ def verificacion():
         "(s→B, s→C, B→C, B→E, E→G, E→H, H→G), y ninguno tiene un pasillo activo hacia <i>t</i>, porque G→t y "
         "H→t están bloqueados. Con 2 rutas sin pasillos compartidos y un corte de 2 pasillos, ambos son óptimos.",
     ])
-
-    h.append(P("6.3 Pruebas automatizadas", "h2"))
-    h.append(P(
-        "El archivo <i>tests/test_algoritmos.py</i> contiene 10 pruebas que pasan correctamente. Además de "
-        "los casos anteriores, incluye restricciones del modelo (lazos, arcos repetidos y recíprocos), el "
-        "caso sin camino, el contraejemplo voraz y una prueba con <b>300 grafos aleatorios</b> de 4 a 7 "
-        "vértices con pasillos bloqueados al azar. En cada uno se compara: (i) la longitud BFS con el mínimo "
-        "obtenido al enumerar todos los caminos simples; (ii) el valor de Edmonds-Karp y de Ford-Fulkerson "
-        "con DFS con el máximo número de caminos sin arcos compartidos hallado por búsqueda exhaustiva; y "
-        "(iii) ese valor con el corte mínimo hallado por fuerza bruta. Todos los resultados coinciden."))
     return h
 
 

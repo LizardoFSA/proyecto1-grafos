@@ -425,7 +425,7 @@ def formato_arcos(arcos):
 
 def informe_texto(grafo, analisis):
     """
-    Genera el informe en texto de un análisis (usado por la interfaz y por la consola).
+    Genera el informe en texto de un análisis (se muestra en el panel de resultados de la interfaz).
 
     Parámetros:
         grafo (Grafo), analisis (dict producido por analizar()).
