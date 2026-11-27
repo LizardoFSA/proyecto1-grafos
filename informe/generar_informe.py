@@ -30,6 +30,7 @@ from reportlab.pdfbase.ttfonts import TTFont  # noqa: E402
 from reportlab.platypus import (BaseDocTemplate, Frame, Image, KeepTogether, NextPageTemplate,  # noqa: E402
                                 PageBreak, PageTemplate, Paragraph, Preformatted, Spacer, Table,
                                 TableStyle, CondPageBreak)
+from reportlab.platypus.tableofcontents import TableOfContents  # noqa: E402
 
 from laberinto import algoritmos as alg  # noqa: E402
 from laberinto.configuraciones import (red_original, configuraciones_comparadas,  # noqa: E402
@@ -208,8 +209,18 @@ def decorar(canv, doc):
     canv.restoreState()
 
 
+class DocumentoInforme(BaseDocTemplate):
+    """Documento que registra cada título de sección (h1) y subsección (h2) en el índice con su página."""
+
+    def afterFlowable(self, flowable):
+        if isinstance(flowable, Paragraph) and flowable.style.name in ("h1", "h2"):
+            texto = flowable.getPlainText()
+            if texto != "Contenido":
+                self.notify("TOCEntry", (0 if flowable.style.name == "h1" else 1, texto, self.page))
+
+
 def construir_documento():
-    doc = BaseDocTemplate(SALIDA_PDF, pagesize=A4, leftMargin=2.3 * cm, rightMargin=2.3 * cm,
+    doc = DocumentoInforme(SALIDA_PDF, pagesize=A4, leftMargin=2.3 * cm, rightMargin=2.3 * cm,
                           topMargin=2.2 * cm, bottomMargin=2.0 * cm,
                           title="Informe técnico – Proyecto 1: Simulador de laberintos y rutas alternativas",
                           author=", ".join(INTEGRANTES), subject="Teoría de Grafos – INFO1158")
@@ -258,20 +269,16 @@ def portada():
 
 
 def indice():
-    h = [P("Contenido", "h1")]
-    secciones = [
-        "1. Introducción",
-        "2. Modelación matemática del laberinto",
-        "3. Investigación y selección de algoritmos",
-        "4. Implementación",
-        "5. Resultados de las tres configuraciones y análisis",
-        "6. Verificación de resultados",
-        "7. Conclusiones",
-        "Referencias",
+    """Índice con números de página, generado automáticamente a partir de los títulos (h1 y h2)."""
+    indice_auto = TableOfContents()
+    indice_auto.dotsMinLevel = 0
+    indice_auto.levelStyles = [
+        ParagraphStyle("indice0", fontName="Cuerpo-B", fontSize=11, leading=14, spaceBefore=6,
+                       leftIndent=0, firstLineIndent=0),
+        ParagraphStyle("indice1", fontName="Cuerpo", fontSize=10, leading=12.8, spaceBefore=0,
+                       leftIndent=18, firstLineIndent=0),
     ]
-    h += [P(s, "lista") for s in secciones]
-    h.append(Spacer(1, 14))
-    return h
+    return [P("Contenido", "h1"), indice_auto]
 
 
 def introduccion():
@@ -622,7 +629,7 @@ def resultados():
 
     def bloque_config(i, nombre, desc, a, img, extra_img=None):
         m, f = a["minimo"], a["flujo"]
-        b = [P(f"5.{i} {nombre}" + ("" if nombre == "Original" else f": {desc[0].lower() + desc[1:]}"), "h2")]
+        b = [P(f"5.{i} {nombre}" + ("" if nombre == "Original" else f": {desc[0].lower() + desc[1:].rstrip('.')}"), "h2")]
         b.append(figura(img, f"Resultados en la configuración «{nombre}».", 13.2))
         filas = [["Resultado", "Valor"],
                  ["¿Existe camino de s a t?", "Sí" if m["existe"] else "No"],
@@ -851,7 +858,7 @@ def main():
     historia += conclusiones()
     historia.append(PageBreak())
     historia += referencias()
-    doc.build(historia)
+    doc.multiBuild(historia)  # varias pasadas para que el índice conozca las páginas definitivas
     print("Informe generado:", SALIDA_PDF)
 
 
