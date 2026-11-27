@@ -222,7 +222,12 @@ def construir_documento():
 # =========================================================================== CONTENIDO
 def portada():
     h = []
-    h.append(Spacer(1, 1.2 * cm))
+    # Logo de la Universidad Católica de Temuco – Facultad de Ingeniería
+    from PIL import Image as PILImage
+    ruta_logo = os.path.join(IMG, "logo_uct.png")
+    lw, lh = PILImage.open(ruta_logo).size
+    h.append(Image(ruta_logo, width=10 * cm, height=10 * cm * lh / lw))
+    h.append(Spacer(1, 0.8 * cm))
     h.append(P("<font color='#555555'>Teoría de Grafos – INFO1158 · Proyecto práctico final</font>",
                "formula"))
     h.append(Spacer(1, 0.6 * cm))
@@ -438,10 +443,10 @@ def investigacion():
     ])
     h.append(P(
         "<b>Otras alternativas revisadas.</b> Para redes con capacidades unitarias existen algoritmos "
-        "asintóticamente más rápidos, como el de Dinic y la cota O(|<i>E</i>|·mín(|<i>V</i>|<super>2/3</super>, "
+        "asintóticamente más rápidos, como el de Dinic (1970) y la cota O(|<i>E</i>|·mín(|<i>V</i>|<super>2/3</super>, "
         "|<i>E</i>|<super>1/2</super>)) de Even y Tarjan (1975). Con |<i>E</i>| ≤ 20 su complejidad adicional "
         "no se justifica."))
-    filas = [["Estrategia", "¿Óptima?", "Complejidad (capacidad 1)", "Observaciones"],
+    filas = [["Estrategia", "Óptima", "Complejidad (capacidad 1)", "Observaciones"],
              ["Voraz (BFS + retirar arcos)", "No", "O(<i>k</i>·(|<i>V</i>|+|<i>E</i>|))",
               "Falla en el contraejemplo de la figura 2."],
              ["Ford-Fulkerson (DFS)", "Sí", "O(<i>k</i>·(|<i>V</i>|+|<i>E</i>|))",
@@ -511,6 +516,9 @@ def implementacion():
         "repetidos y los recíprocos, considerando también los pasillos bloqueados."))
 
     h.append(P("4.3 Camino mínimo (BFS) y reconstrucción", "h2"))
+    h.append(P("La función <i>bfs_camino_minimo</i> (archivo <i>algoritmos.py</i>) implementa la búsqueda "
+               "en anchura seleccionada en la sección 3.1. Su funcionamiento se resume en el siguiente "
+               "pseudocódigo:"))
     h.append(codigo("""
 bfs_camino_minimo(G, s, t):
     distancia[s] <- 0 ;  padre[s] <- NULO ;  cola <- [s]
@@ -524,8 +532,23 @@ bfs_camino_minimo(G, s, t):
     si camino vacio: devolver {existe: falso, longitud: NULO}   # sin longitud numerica
     devolver {existe: verdadero, longitud: |camino| - 1, camino}
 """))
+    h.append(P(
+        "La cola, implementada con <i>collections.deque</i>, hace que los vértices se procesen por niveles: "
+        "primero los que están a 1 arco de <i>s</i>, luego los que están a 2, y así sucesivamente. Solo se "
+        "recorren los pasillos activos, por lo que los bloqueados nunca forman parte del resultado. Cada "
+        "vértice se descubre una única vez y en ese momento se guardan su distancia y su predecesor "
+        "(<i>padre</i>); por eso la búsqueda puede detenerse apenas se extrae <i>t</i>, pues su distancia ya "
+        "es <i>d</i><sub>G</sub>(<i>s</i>, <i>t</i>). La reconstrucción recorre los predecesores desde "
+        "<i>t</i> hasta <i>s</i> e invierte la lista obtenida. Si <i>t</i> nunca se descubre, la función "
+        "indica que no existe camino y devuelve la longitud como NULO, de modo que no se le asigna un valor "
+        "numérico. Cada vértice entra a la cola a lo sumo una vez y cada arco se revisa a lo sumo una vez, "
+        "así que el tiempo es O(|<i>V</i>| + |<i>E</i>|)."))
 
-    h.append(KeepTogether([P("4.4 Caminos sin arcos compartidos y corte mínimo (Edmonds-Karp)", "h2"), codigo("""
+    h.append(CondPageBreak(8.5 * cm))
+    h += [P("4.4 Caminos sin arcos compartidos y corte mínimo (Edmonds-Karp)", "h2"),
+          P("La función <i>max_caminos_disjuntos</i> calcula, en una sola ejecución, el "
+            "número máximo de caminos, una familia que lo alcanza y un corte mínimo:"),
+          codigo("""
 max_caminos_disjuntos(G, s, t):
     para cada arco activo (u,v):  cap[(u,v)] <- 1 ;  cap[(v,u)] <- 0      # red residual
     repetir:
@@ -539,7 +562,7 @@ max_caminos_disjuntos(G, s, t):
     S <- vertices alcanzables desde s con cap > 0                          # lado S del corte
     corte <- { (u,v) activo : u en S, v fuera de S }
     devolver valor, caminos, corte, S
-""")]))
+""")]
     h.append(P(
         "Como cada arco de <i>F</i> se usa una sola vez durante la descomposición, los caminos obtenidos "
         "no comparten arcos; la eliminación de ciclos garantiza además que ningún camino repite vértices. "
@@ -574,7 +597,9 @@ max_caminos_disjuntos(G, s, t):
              ["Comparar estrategias", "Ventana con BFS frente a DFS y Edmonds-Karp frente a Ford-Fulkerson (DFS) y la estrategia voraz."]]
     h.append(tabla(filas, [5.0, 10.0], "Funcionalidades de la interfaz frente a los requisitos del enunciado."))
 
-    h.append(P("4.7 Ejecución", "h2"))
+    h.append(P("4.7 Código fuente y ejecución", "h2"))
+    h.append(P("El código fuente se adjunta junto a este informe en la entrega de la plataforma Educa. "
+               "Incluye el archivo <i>LEEME.md</i>, con las dependencias y las instrucciones de ejecución."))
     h.append(P("Para ejecutar la aplicación solo se necesita Python con <i>tkinter</i>, que viene incluido "
                "en la instalación estándar; no se requieren paquetes adicionales. Desde la carpeta del "
                "proyecto:"))
@@ -590,7 +615,10 @@ def resultados():
         "Las tres configuraciones mantienen la entrada <i>s</i> y la salida <i>t</i>. En las figuras se "
         "usa el modo «Todo» de la aplicación: franja amarilla para el camino mínimo, un color por cada "
         "camino de la familia máxima y × en rojo para los pasillos del corte mínimo; los pasillos "
-        "bloqueados se muestran en gris discontinuo con un símbolo de prohibición."))
+        "bloqueados se muestran en gris discontinuo con un símbolo de prohibición. Cada modificación se "
+        "construye a partir de la red original: antes de aplicarla, los pasillos bloqueados en la "
+        "configuración anterior se restablecen desde la interfaz (clic sobre la flecha o botón «Restablecer "
+        "todos los pasillos»)."))
 
     def bloque_config(i, nombre, desc, a, img, extra_img=None):
         m, f = a["minimo"], a["flujo"]
@@ -624,7 +652,8 @@ def resultados():
                    alinear_centro=tuple(range(1, len(niveles) + 1))))
     h.append(P(
         "<b>Análisis.</b> La BFS ubica a <i>t</i> en el nivel 4, por lo que ningún camino tiene menos de 4 "
-        "pasillos. La red admite 3 rutas sin pasillos compartidos, una por cada sector "
+        "pasillos. Existen varios caminos mínimos (por ejemplo, s → A → E → G → t y s → B → E → H → t "
+        "también tienen 4 arcos); como permite el enunciado, se presenta uno de ellos. La red admite 3 rutas sin pasillos compartidos, una por cada sector "
         "(norte, centro y sur). Este número no puede mejorarse: <i>s</i> tiene solo 3 pasillos de salida y "
         "cada ruta usa uno distinto. El corte mínimo encontrado, {s→A, s→B, s→C}, consiste justamente en "
         "esos 3 pasillos. Otro corte mínimo es {G→t, H→t, I→t}: la red tiene dos «cuellos» de capacidad 3, "
@@ -662,7 +691,7 @@ def resultados():
 
     h.append(CondPageBreak(8 * cm))
     h.append(P("5.4 Comparación de las configuraciones", "h2"))
-    filas = [["Configuración", "Cambio", "¿Camino?", "d(s,t)", "Máx. caminos", "Corte mínimo", "|C| = máx."]]
+    filas = [["Configuración", "Cambio", "Camino", "d(s,t)", "Máx. caminos", "Corte mínimo", "|C| = máx."]]
     for n, d, g, a in CONFIGS:
         m, f = a["minimo"], a["flujo"]
         filas.append([n, d, "Sí" if m["existe"] else "No", str(m["longitud"]) if m["existe"] else "—",
@@ -736,6 +765,7 @@ def verificacion():
         for _, _, _, a in CONFIGS:
             fila.append(ok(a["verificacion"][i][1]))
         filas.append(fila)
+    filas[0] = ["Comprobación", "Original", "Modif. 1", "Modif. 2"]
     h.append(tabla(filas, [8.6, 2.1, 2.2, 2.2], "Comprobaciones automáticas sobre las tres configuraciones.",
                    alinear_centro=(1, 2, 3)))
     h.append(P("Además, la optimalidad de cada resultado puede razonarse a mano:"))
@@ -782,6 +812,8 @@ def referencias():
         "(3.ª ed.). MIT Press. Cap. 22 (búsqueda en anchura y en profundidad) y cap. 26 (flujo máximo, "
         "Ford-Fulkerson, Edmonds-Karp y teorema de flujo máximo y corte mínimo).",
         "Diestel, R. (2017). <i>Graph Theory</i> (5.ª ed.). Springer. Cap. 3 (teorema de Menger).",
+        "Dinic, E. A. (1970). Algorithm for solution of a problem of maximum flow in networks with power "
+        "estimation. <i>Soviet Mathematics Doklady</i>, 11, 1277–1280.",
         "Edmonds, J. y Karp, R. M. (1972). Theoretical improvements in algorithmic efficiency for network "
         "flow problems. <i>Journal of the ACM</i>, 19(2), 248–264.",
         "Even, S. y Tarjan, R. E. (1975). Network flow and testing graph connectivity. <i>SIAM Journal on "
@@ -803,6 +835,7 @@ def main():
     historia = []
     historia += portada()
     historia += indice()
+    historia.append(PageBreak())
     historia += introduccion()
     historia.append(PageBreak())
     historia += modelo()
@@ -816,6 +849,7 @@ def main():
     historia += verificacion()
     historia.append(CondPageBreak(9 * cm))
     historia += conclusiones()
+    historia.append(PageBreak())
     historia += referencias()
     doc.build(historia)
     print("Informe generado:", SALIDA_PDF)
