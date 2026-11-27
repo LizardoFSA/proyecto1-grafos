@@ -40,6 +40,8 @@ from laberinto.configuraciones import (red_original, configuraciones_comparadas,
 INTEGRANTES = ["Benjamín Aliaga", "Juan Carrera", "Lizardo Salazar"]
 DOCENTE = "Elliott Mardones"
 FECHA = "26 de noviembre de 2026"
+REPO_URL = "https://github.com/LizardoFSA/simulador-laberintos-grafos"
+ENLACE_REPO = f"<link href='{REPO_URL}' color='#1d4ed8'><u>{REPO_URL}</u></link>"
 
 SALIDA_PDF = os.path.join(RAIZ, "informe", "Informe_Proyecto1_Grafos.pdf")
 IMG = os.path.join(RAIZ, "informe", "img")
@@ -256,7 +258,8 @@ def portada():
     h.append(Spacer(1, 1.0 * cm))
     datos = [["Integrantes", "<br/>".join(INTEGRANTES)],
              ["Docente", DOCENTE],
-             ["Fecha de entrega", FECHA]]
+             ["Fecha de entrega", FECHA],
+             ["Código fuente", ENLACE_REPO]]
     t = Table([[Paragraph(a, E["celda_b"]), Paragraph(b, E["celda"])] for a, b in datos],
               colWidths=[4 * cm, 10 * cm])
     t.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, -2), 0.3, colors.HexColor("#c0c8d0")),
@@ -591,7 +594,7 @@ max_caminos_disjuntos(G, s, t):
 
     h.append(KeepTogether([P("4.6 Interfaz interactiva", "h2"), figura("interfaz.png",
                     "Interfaz de la aplicación (configuración Modificación 2, modo «Todo»). A la izquierda, "
-                    "la red y los resultados; a la derecha, los controles.", 14.5)]))
+                    "la red y los resultados; a la derecha, los controles.", 13.5)]))
     filas = [["Requisito", "Cómo se realiza en la aplicación"],
              ["Visualizar vértices y pasillos con dirección", "Lienzo con flechas; los vértices se pueden arrastrar."],
              ["Seleccionar entrada y salida distintas", "Listas «Entrada s» y «Salida t» o clic derecho sobre un vértice; se rechaza s = t."],
@@ -605,14 +608,13 @@ max_caminos_disjuntos(G, s, t):
     h.append(tabla(filas, [5.0, 10.0], "Funcionalidades de la interfaz frente a los requisitos del enunciado."))
 
     h.append(P("4.7 Código fuente y ejecución", "h2"))
-    h.append(P("El código fuente se adjunta junto a este informe en la entrega de la plataforma Educa. "
-               "Incluye el archivo <i>LEEME.md</i>, con las dependencias y las instrucciones de ejecución."))
+    h.append(Paragraph(f"El código fuente se adjunta junto a este informe en la entrega de la plataforma Educa "
+                       f"y también está disponible en el repositorio {ENLACE_REPO}. Incluye el archivo "
+                       "<i>README.md</i>, con las dependencias y las instrucciones de ejecución.",
+                       ParagraphStyle("cuerpo_izq", parent=E["cuerpo"], alignment=TA_LEFT)))
     h.append(P("Para ejecutar la aplicación solo se necesita Python con <i>tkinter</i>, que viene incluido "
-               "en la instalación estándar; no se requieren paquetes adicionales. Desde la carpeta del "
-               "proyecto:"))
-    h.append(codigo("""
-python app.py
-"""))
+               "en la instalación estándar; no se requieren paquetes adicionales. La aplicación se inicia "
+               "desde la carpeta del proyecto con el comando <font name='Mono'>python app.py</font>."))
     return h
 
 
